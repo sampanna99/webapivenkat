@@ -36,6 +36,9 @@ namespace DemoWebApi
             );
             EnableCorsAttribute cors = new EnableCorsAttribute("*", "*", "*");
             config.EnableCors(cors);
+
+
+            config.Filters.Add(new RequireHttpsAttribute());
             //var jsonpFormatter = new JsonpMediaTypeFormatter(config.Formatters.JsonFormatter);
             //config.Formatters.Insert(0, jsonpFormatter);
             //config.Formatters.Add(new CustomJsonFormatter());
