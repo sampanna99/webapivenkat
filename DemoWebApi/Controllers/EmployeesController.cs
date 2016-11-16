@@ -1,6 +1,5 @@
 ﻿using EmployeeDataAccess;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,11 +9,24 @@ namespace DemoWebApi.Controllers
 {
     public class EmployeesController : ApiController
     {
-        public IEnumerable<Employee> Get()
+        public HttpResponseMessage Get(string gender = "All")
         {
             using (EmployeeDBEntities entities = new EmployeeDBEntities())
             {
-                return entities.Employees.ToList();
+                switch (gender.ToLower())
+                {
+                    case "all":
+                        return Request.CreateResponse(HttpStatusCode.OK, entities.Employees.ToList());
+
+                    case "male":
+                        return Request.CreateResponse(HttpStatusCode.OK, entities.Employees.Where(e => e.Gender == "male").ToList());
+
+                    case "female":
+                        return Request.CreateResponse(HttpStatusCode.OK, entities.Employees.Where(e => e.Gender == "female").ToList());
+
+                    default:
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Value for gender must be All, Male or Female" + gender + " is invalid");
+                }
             }
         }
 
@@ -72,6 +84,37 @@ namespace DemoWebApi.Controllers
                         entities.Employees.Remove(entity);
                         entities.SaveChanges();
                         return Request.CreateResponse(HttpStatusCode.OK);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        public HttpResponseMessage Put([FromBody]int id, [FromUri]Employee employee)
+        {
+            try
+            {
+                using (EmployeeDBEntities entities = new EmployeeDBEntities())
+                {
+                    var entity = entities.Employees.FirstOrDefault(e => e.ID == id);
+
+                    if (entity == null)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Employee with the id = " + id.ToString() + "is not found");
+                    }
+                    else
+                    {
+
+                        entity.FirstName = employee.FirstName;
+                        entity.LastName = employee.LastName;
+                        entity.Gender = employee.Gender;
+                        entity.Salary = employee.Salary;
+
+                        entities.SaveChanges();
+                        return Request.CreateResponse(HttpStatusCode.OK, entity);
                     }
                 }
             }
