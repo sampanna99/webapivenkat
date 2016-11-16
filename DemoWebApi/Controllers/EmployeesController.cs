@@ -93,7 +93,7 @@ namespace DemoWebApi.Controllers
             }
         }
 
-        public HttpResponseMessage Put([FromBody]int id, [FromUri]Employee employee)
+        public HttpResponseMessage Put(int id, Employee employee)
         {
             try
             {

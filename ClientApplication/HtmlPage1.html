@@ -2,7 +2,7 @@
 <html>
 <head>
     <title></title>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
     <script src="Scripts/jquery-1.10.2.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -11,7 +11,7 @@
             $('#btn').click(function () {
                 $.ajax({
                     type: 'GET',
-                    url: 'api/Employees',
+                    url: "http://localhost:59172/api/employees",
                     dataType: 'jsonp',
                     success: function (data) {
                         ulEmployees.empty();
